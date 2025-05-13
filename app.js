@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+<<<<<<< HEAD
 const PORT = 3000;
 
 app.get('/', (req, res) => {
@@ -9,3 +10,4 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur http://localhost:${PORT}`);
 });
+
