@@ -1,7 +1,7 @@
 {
   "name": "jeumorpion",
   "version": "1.0.0",
-  "description": "",
+  "description": "Jeu de morpion en Node.js créer par Amin et Luka",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
