@@ -1,9 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-  <title>Morpion</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu de Morpion</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <h1><%= message %></h1>
+    <h1>Jeu de Morpion</h1>
+    <h2>Joueur courant : <%= currentPlayer %></h2>
+    <% if (message) { %>
+        <h3><%= message %></h3>
+    <% } %>
+    <form method="POST" action="/play">
+        <table>
+            <% for (let i = 0; i < 3; i++) { %>
+                <tr>
+                    <% for (let j = 0; j < 3; j++) { %>
+                        <% let index = i * 3 + j; %>
+                        <td>
+                            <input type="checkbox" name="index" value="<%= index %>"
+                                <%= board[index] || gameOver ? 'disabled' : '' %>
+                                <%= board[index] === 'X' ? 'checked' : '' %>
+                                class="<%= board[index] %>">
+                            <%= board[index] || '' %>
+                        </td>
+                    <% } %>
+                </tr>
+            <% } %>
+        </table>
+        <button type="submit" <%= gameOver ? 'disabled' : '' %>>Jouer</button>
+    </form>
+    <form method="POST" action="/reset">
+        <button type="submit">Recommencer</button>
+    </form>
 </body>
 </html>
