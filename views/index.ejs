@@ -1,20 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Tic-Tac-Toe</title>
+  <title>Jeu Morpion</title>
   <style>
     .board { display: grid; grid-template-columns: repeat(3, 100px); }
     .cell { width: 100px; height: 100px; border: 1px solid black; text-align: center; font-size: 40px; }
+    .message { margin-top: 20px; font-size: 24px; }
   </style>
 </head>
 <body>
   <h1>Tic-Tac-Toe</h1>
-  <p>Joueur actuel : <%= currentPlayer %></p>
+
+  <% if (isOver) { %>
+    <p class="message">
+      <% if (winner) { %>
+        🎉 Joueur <%= winner %> a gagné !
+      <% } else { %>
+        🤝 Match nul !
+      <% } %>
+    </p>
+    <form action="/reset" method="POST">
+      <button type="submit">Rejouer</button>
+    </form>
+  <% } else { %>
+    <p>Joueur actuel : <%= currentPlayer %></p>
+  <% } %>
+
   <div class="board">
     <% gameState.forEach((cell, index) => { %>
       <form action="/play" method="POST">
         <input type="hidden" name="cell" value="<%= index %>">
-        <button class="cell" type="submit" <%= cell ? 'disabled' : '' %>>
+        <button class="cell" type="submit" <%= cell || isOver ? 'disabled' : '' %>>
           <%= cell || '' %>
         </button>
       </form>

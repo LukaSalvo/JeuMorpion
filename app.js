@@ -7,11 +7,28 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-let gameState = Array(9).fill(null); // Tableau 3x3 à plat
+let gameState = Array(9).fill(null);
 let currentPlayer = 'X';
 
+function checkWinner(board) {
+  const winPatterns = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6],
+  ];
+
+  for (const [a, b, c] of winPatterns) {
+    if (board[a] && board[a] === board[b] && board[b] === board[c]) {
+      return board[a];
+    }
+  }
+  return null;
+}
+
 app.get('/', (req, res) => {
-  res.render('index', { gameState, currentPlayer });
+  const winner = checkWinner(gameState);
+  const isOver = winner !== null || !gameState.includes(null);
+  res.render('index', { gameState, currentPlayer, winner, isOver });
 });
 
 app.post('/play', (req, res) => {
@@ -23,22 +40,11 @@ app.post('/play', (req, res) => {
   res.redirect('/');
 });
 
-// Fonction pour vérifier un gagnant
-function checkWinner(board) {
-  const winPatterns = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Lignes
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Colonnes
-    [0, 4, 8], [2, 4, 6], // Diagonales
-  ];
-
-  for (const pattern of winPatterns) {
-    const [a, b, c] = pattern;
-    if (board[a] && board[a] === board[b] && board[b] === board[c]) {
-      return board[a]; // Retourne 'X' ou 'O'
-    }
-  }
-  return null; // Pas de gagnant
-}
+app.post('/reset', (req, res) => {
+  gameState = Array(9).fill(null);
+  currentPlayer = 'X';
+  res.redirect('/');
+});
 
 const games = {};
 let nextId = 1;
@@ -72,16 +78,14 @@ app.put('/api/games/:id', (req, res) => {
     return res.status(400).json({ error: `Ce n'est pas le tour de ${player}` });
   }
 
-  // Jouer le coup
   game.board[cell] = game.currentPlayer;
 
-  // Vérifier un gagnant
   const winner = checkWinner(game.board);
   if (winner) {
     game.isOver = true;
     game.winner = winner;
   } else if (!game.board.includes(null)) {
-    game.isOver = true; // Match nul
+    game.isOver = true;
   } else {
     game.currentPlayer = game.currentPlayer === 'X' ? 'O' : 'X';
   }
