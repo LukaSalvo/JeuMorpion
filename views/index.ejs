@@ -1,35 +1,24 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Jeu de Morpion</title>
+  <title>Tic-Tac-Toe</title>
+  <style>
+    .board { display: grid; grid-template-columns: repeat(3, 100px); }
+    .cell { width: 100px; height: 100px; border: 1px solid black; text-align: center; font-size: 40px; }
+  </style>
 </head>
 <body>
-  <h1>Jeu de Morpion</h1>
-  <p>Joueur courant : <strong><%= currentPlayer %></strong></p>
-
-  <form method="POST" action="/play">
-    <table border="1" cellspacing="0" cellpadding="10">
-      <% for (let i = 0; i < 3; i++) { %>
-        <tr>
-          <% for (let j = 0; j < 3; j++) { 
-            const index = i * 3 + j;
-            const value = gameState[index];
-          %>
-            <td style="text-align: center;">
-              <% if (value) { %>
-                <strong><%= value %></strong>
-              <% } else { %>
-                <input type="radio" name="cell" value="<%= index %>">
-              <% } %>
-            </td>
-          <% } %>
-        </tr>
-      <% } %>
-    </table>
-    <br>
-    <button type="submit">Jouer</button>
-  </form>
+  <h1>Tic-Tac-Toe</h1>
+  <p>Joueur actuel : <%= currentPlayer %></p>
+  <div class="board">
+    <% gameState.forEach((cell, index) => { %>
+      <form action="/play" method="POST">
+        <input type="hidden" name="cell" value="<%= index %>">
+        <button class="cell" type="submit" <%= cell ? 'disabled' : '' %>>
+          <%= cell || '' %>
+        </button>
+      </form>
+    <% }) %>
+  </div>
 </body>
 </html>
-
